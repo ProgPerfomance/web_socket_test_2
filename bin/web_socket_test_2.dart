@@ -1,32 +1,39 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:async';
-Map a = {
-  'uid': '1',
-  'message': 'fgjudfijidfifdid',
-  'cid': '2',
-  'requestType': 'message', //init
-};
-Future<void> main() async {
-  while(true) {
-    final socket = await WebSocket.connect('ws://63.251.122.116:2310');
-    print('Connected to server');
-  var uid =  stdin.readLineSync();
-  var cid = stdin.readLineSync();
-  var messageText = stdin.readLineSync();
-  var message = {'uid': '$uid',
-  'cid': '$cid', 'message': '$messageText',
-  'requestType': 'message'};
-      socket.add(jsonEncode(message));
-    socket.listen(
-          (message) {
-        print('Received message: $message');
-      },
-    );
-  //    final message = jsonEncode(a);
-    
-    // Timer.periodic(Duration(seconds: 2), (_) {
 
-    // });
-  }
+void main() async {
+  // Подключаемся к серверу WebSocket
+  var socket = await WebSocket.connect('ws://localhost:8080');
+
+  // Отправляем сообщение о присоединении к серверу
+  var joinMessage = jsonEncode({'action': 'join'});
+  socket.add(joinMessage);
+
+  // Пример сообщения для отправки
+  var messageToSend = {
+    'cid': 'your_chat_id',
+    'text': 'Hello, world!',
+    // Другие данные вашего сообщения, если необходимо
+  };
+
+  // Периодически отправляем сообщения серверу
+  var interval = Duration(seconds: 5);
+  Timer.periodic(interval, (timer) {
+    socket.add(jsonEncode(messageToSend));
+  });
+
+  // Прослушиваем сообщения от сервера
+  socket.listen((dynamic data) {
+    // Обработка полученных сообщений, если необходимо
+    print('Received: $data');
+  }, onError: (error) {
+    // Обработка ошибок подключения
+    print('Error: $error');
+  }, onDone: () {
+    // Действия при закрытии соединения
+    print('Connection closed');
+  });
+
+  // Программа продолжит работу, пока соединение открыто
 }
