@@ -4,7 +4,7 @@ import 'dart:io';
 
 void main() async {
   // Подключаемся к серверу WebSocket
-  var socket = await WebSocket.connect('ws://localhost:8080');
+  var socket = await WebSocket.connect('ws://63.251.122.116:2310');
 
   // Отправляем сообщение о присоединении к серверу
   var joinMessage = jsonEncode({'action': 'join'});
