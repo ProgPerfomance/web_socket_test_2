@@ -20,7 +20,9 @@ void main() async {
   // Периодически отправляем сообщения серверу
   var interval = Duration(seconds: 5);
   Timer.periodic(interval, (timer) {
-    socket.add(jsonEncode(messageToSend));
+    var cid = stdin.readLineSync();
+    var text = stdin.readLineSync();
+    socket.add(jsonEncode({'cid': cid,'text': text}));
   });
 
   // Прослушиваем сообщения от сервера
